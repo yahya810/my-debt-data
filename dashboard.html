@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الديون - بيانات حية</title>
+    <style>
+        * { font-family: 'Segoe UI', 'Traditional Arabic', Tahoma, sans-serif; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%); margin: 0; padding: 20px; color: #2c3e50; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 25px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #2c3e50; font-size: 28px; margin: 0; }
+        .tabs { display: flex; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 16px; border: none; background: #f8f9fa; font-size: 16px; cursor: pointer; transition: all 0.3s; outline: none; font-weight: bold; }
+        .tab-btn:hover { background: #e9ecef; }
+        .tab-btn.active { background: #3498db; color: white; }
+        .tab-content { display: none; background: white; border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .tab-content.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eaeaea; font-size: 14px; }
+        th { background-color: #f8f9fa; font-weight: bold; color: #2c3e50; }
+        tr:hover { background-color: #f8fcff; }
+        .empty { text-align: center; padding: 40px; color: #7f8c8d; font-style: italic; font-size: 18px; }
+        .last-update { text-align: center; margin-top: 20px; color: #7f8c8d; font-size: 14px; }
+        .total { 
+            text-align: left; 
+            padding: 12px; 
+            background: #e8f4f8; 
+            border-radius: 6px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            color: #2980b9;
+        }
+        @media (max-width: 768px) {
+            th, td { padding: 8px 6px; font-size: 12px; }
+            .tab-btn { padding: 12px 8px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>لوحة تحكم الديون — بيانات حية من السحابة</h1>
+            <p>آخر تحديث: <span id="update-time">جارٍ التحميل...</span></p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="sim_cards">الشرائح والرصيد</button>
+            <button class="tab-btn" data-tab="food_items">المواد الغذائية</button>
+            <button class="tab-btn" data-tab="received_debts">الديون المستلمة</button>
+            <button class="tab-btn" data-tab="lent_debts">الديون المستلفة</button>
+            <button class="tab-btn" data-tab="household_tools">الأدوات المنزلية</button>
+        </div>
+
+        <div id="sim_cards" class="tab-content active">
+            <table id="table-sim_cards"><thead><tr><th>الاسم الكامل</th><th>نوع الشريحة</th><th>السعر</th><th>اليوم</th><th>التاريخ</th><th>الشهر</th><th>السنة</th><th>الوقت</th><th>تاريخ التذكير</th></tr></thead><tbody></tbody></table>
+            <div id="empty-sim_cards" class="empty">لا توجد بيانات بعد</div>
+            <div id="total-sim_cards" class="total"></div>
+        </div>
+
+        <div id="food_items" class="tab-content">
+            <table id="table-food_items"><thead><tr><th>الاسم الكامل</th><th>نوع المادة</th><th>السعر</th><th>اليوم</th><th>التاريخ</th><th>الشهر</th><th>السنة</th><th>الوقت</th></tr></thead><tbody></tbody></table>
+            <div id="empty-food_items" class="empty">لا توجد بيانات بعد</div>
+            <div id="total-food_items" class="total"></div>
+        </div>
+
+        <div id="received_debts" class="tab-content">
+            <table id="table-received_debts"><thead><tr><th>الاسم الكامل</th><th>المبلغ</th><th>اليوم</th><th>التاريخ</th><th>الشهر</th><th>السنة</th><th>الوقت</th></tr></thead><tbody></tbody></table>
+            <div id="empty-received_debts" class="empty">لا توجد بيانات بعد</div>
+            <div id="total-received_debts" class="total"></div>
+        </div>
+
+        <div id="lent_debts" class="tab-content">
+            <table id="table-lent_debts"><thead><tr><th>الاسم الكامل</th><th>شخص المستلف</th><th>المبلغ</th><th>اليوم</th><th>التاريخ</th><th>الشهر</th><th>السنة</th><th>الوقت</th></tr></thead><tbody></tbody></table>
+            <div id="empty-lent_debts" class="empty">لا توجد بيانات بعد</div>
+            <div id="total-lent_debts" class="total"></div>
+        </div>
+
+        <div id="household_tools" class="tab-content">
+            <table id="table-household_tools"><thead><tr><th>الاسم الكامل</th><th>نوع الأداة</th><th>اليوم</th><th>التاريخ</th><th>الشهر</th><th>السنة</th><th>الوقت</th><th>تاريخ الاسترجاع</th></tr></thead><tbody></tbody></table>
+            <div id="empty-household_tools" class="empty">لا توجد بيانات بعد</div>
+            <div id="total-household_tools" class="total"></div>
+        </div>
+
+        <div class="last-update">
+            <p>تم التحديث تلقائيًا كل 10 ثوانٍ • البيانات مباشرة من Firebase</p>
+        </div>
+    </div>
+
+    <script>
+        const FIREBASE_URL = "https://debtapp-alg-default-rtdb.firebaseio.com/.json";
+
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+
+        function calculateTotal(data, amountField) {
+            if (!data || !amountField) return 0;
+            let total = 0;
+            Object.values(data).forEach(item => {
+                if (item[amountField] !== undefined) {
+                    total += parseFloat(item[amountField]) || 0;
+                }
+            });
+            return total;
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(FIREBASE_URL);
+                const data = await res.json();
+                if (!data) { 
+                    document.getElementById('update-time').textContent = "لا توجد بيانات"; 
+                    return; 
+                }
+                document.getElementById('update-time').textContent = new Date().toLocaleString('ar-EG', {timeZone:'Africa/Algiers',hour12:false});
+
+                const categories = [
+                    { key: 'sim_cards', cols: ['الاسم الكامل','نوع الشريحة','السعر','اليوم','التاريخ','الشهر','السنة','الوقت','تاريخ التذكير'], amount: 'السعر' },
+                    { key: 'food_items', cols: ['الاسم الكامل','نوع المادة','السعر','اليوم','التاريخ','الشهر','السنة','الوقت'], amount: 'السعر' },
+                    { key: 'received_debts', cols: ['الاسم الكامل','المبلغ','اليوم','التاريخ','الشهر','السنة','الوقت'], amount: 'المبلغ' },
+                    { key: 'lent_debts', cols: ['الاسم الكامل','شخص المستلف','المبلغ','اليوم','التاريخ','الشهر','السنة','الوقت'], amount: 'المبلغ' },
+                    { key: 'household_tools', cols: ['الاسم الكامل','نوع الأداة','اليوم','التاريخ','الشهر','السنة','الوقت','تاريخ الاسترجاع'], amount: null }
+                ];
+
+                categories.forEach(cat => {
+                    const tbody = document.querySelector(`#table-${cat.key} tbody`);
+                    const emptyEl = document.getElementById(`empty-${cat.key}`);
+                    const totalEl = document.getElementById(`total-${cat.key}`);
+                    tbody.innerHTML = '';
+                    
+                    const records = data[cat.key] ? Object.values(data[cat.key]) : [];
+                    if (records.length === 0) {
+                        emptyEl.style.display = 'block';
+                        totalEl.style.display = 'none';
+                    } else {
+                        emptyEl.style.display = 'none';
+                        records.forEach(rec => {
+                            const row = document.createElement('tr');
+                            cat.cols.forEach(col => {
+                                const cell = document.createElement('td');
+                                cell.textContent = rec[col] !== undefined ? rec[col] : '';
+                                row.appendChild(cell);
+                            });
+                            tbody.appendChild(row);
+                        });
+
+                        if (cat.amount) {
+                            const total = calculateTotal(data[cat.key], cat.amount);
+                            totalEl.textContent = `💰 المجموع الكلي: ${total.toFixed(2)}`;
+                            totalEl.style.display = 'block';
+                        } else {
+                            totalEl.style.display = 'none';
+                        }
+                    }
+                });
+            } catch (e) {
+                document.getElementById('update-time').textContent = "خطأ في التحميل — تحقق من الاتصال";
+                console.error(e);
+            }
+        }
+
+        loadData();
+        setInterval(loadData, 10000);
+    </script>
+</body>
+</html>
